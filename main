@@ -1,0 +1,103 @@
+#include <Adafruit_NeoPixel.h>
+
+#define pixels   25 // Number of pixels in strand
+#define micPin   A0 // Microphone is attached to this analog pin
+#define ledPin    6 // NeoPixel LED strand is connected to this pin
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(pixels, ledPin, NEO_GRB + NEO_KHZ800);
+
+int buttonState = 0;
+int counter = 0;
+
+void setup() {
+// put your setup code here, to run once:
+  Serial.begin(9600);
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
+}
+
+void loop() {
+
+buttonState = digitalRead(2);
+if (buttonState == 1) {
+    counter++;
+    delay(250);
+}
+
+if(counter == 0){ 
+
+//LEDs off:
+for(int i=0; i<strip.numPixels(); i++) {
+strip.setPixelColor(i,0,0,0, (0));
+strip.show();
+}
+}
+
+if(counter == 1){
+  
+  int vol = analogRead(micPin);
+  int volMap = map(vol, 0, 300, 0, 30);
+
+
+  if (vol <= 30 && vol > 26){
+  for(int i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i, 255, 0, 0, (50));
+    //red
+    strip.show();
+  }
+  }
+  
+  else if (vol <= 25 && vol > 22){
+  for(int i=0; i<strip.numPixels(); i++) {
+     strip.setPixelColor(i, 255, 128, 0, (50));
+    //orange
+    strip.show();
+  }
+  }
+  
+  else if (vol <= 22 && vol > 20){
+  for(int i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i, 255, 255, 0, (50));
+    //yellow
+    strip.show();
+  }
+  }
+  
+   else if (vol <= 20 && vol > 17){
+  for(int i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i, 0, 204, 0, (50));
+    //green
+    strip.show();
+  }
+  }
+  
+  else if (vol <= 17 && vol > 15){
+  for(int i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i, 0, 0, 255, (50));
+    //blue
+    strip.show();
+  }
+  }
+  
+  else if (vol <= 15 && vol > 13){
+    for(int i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i, 110, 0, 255, (50));
+    //purple
+    strip.show();
+  }
+  }
+   
+  else if (vol <= 13) {
+  for(int i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i, 0, 0, 0, (0));
+    strip.show();
+  }
+  }
+  
+  Serial.println(volMap);
+}
+else if(counter == 2) {
+   counter = 0;
+  strip.show();
+  }
+  }
